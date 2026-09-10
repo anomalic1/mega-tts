@@ -5,6 +5,7 @@ import { ArrowLeft, Ghost, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { GoogleIcon } from '@/components/ui/icons'
 import { useAuth } from '@/context/AuthContext'
+import { MISSING_FIREBASE_ENV_VARS } from '@/lib/firebase'
 import { REQUIRE_SIGN_IN } from '@/config'
 
 /**
@@ -110,6 +111,11 @@ export function SignInPage() {
                   ? 'This deployment requires an account, but sign-in isn’t configured yet. The host needs to set the VITE_FIREBASE_* environment variables (see docs/FIREBASE_SETUP.md in the repository) and redeploy.'
                   : 'This deployment isn’t configured with a sign-in service, so Zydit is running fully local — which is kind of the point.'}
               </p>
+              {MISSING_FIREBASE_ENV_VARS.length > 0 && (
+                <p className="rounded-lg border border-white/[0.08] bg-white/[0.02] px-3 py-2 font-mono text-[11px] leading-relaxed text-amber-300/80">
+                  missing from this build: {MISSING_FIREBASE_ENV_VARS.join(', ')}
+                </p>
+              )}
               {!REQUIRE_SIGN_IN && (
                 <p className="text-xs text-titanium-500">
                   Hosts can enable Google sign-in by setting the{' '}

@@ -41,6 +41,21 @@ export const firebaseConfig: FirebaseWebConfig = hasEnvConfig
 export const isFirebaseEnabled =
   hasEnvConfig || isCommittedConfigComplete(COMMITTED_FIREBASE_CONFIG)
 
+/**
+ * Diagnostic: which of the required variables are absent from this build.
+ * Empty when everything is in place. surfaced on the sign-in page so a
+ * misconfigured deployment says exactly what it's missing instead of a
+ * generic "not configured".
+ */
+export const MISSING_FIREBASE_ENV_VARS: readonly string[] = (
+  [
+    'VITE_FIREBASE_API_KEY',
+    'VITE_FIREBASE_AUTH_DOMAIN',
+    'VITE_FIREBASE_PROJECT_ID',
+    'VITE_FIREBASE_APP_ID',
+  ] as const
+).filter((name) => !env[name as keyof typeof env])
+
 let authPromise: Promise<Auth | null> | null = null
 
 /** Lazily initialize Firebase Auth. Resolves to null when unconfigured. */
