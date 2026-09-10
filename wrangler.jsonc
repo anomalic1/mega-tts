@@ -1,0 +1,10 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "zydit-tts",
+  "compatibility_date": "2026-09-10",
+  "description": "Zydit TTS — privacy-first, zero-cloud-storage text-to-speech studio (static assets on Workers)",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  }
+}

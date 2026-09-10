@@ -107,7 +107,7 @@ export function AboutSection() {
             <Badge>TypeScript</Badge>
             <Badge>Tailwind v4</Badge>
             <Badge>Web Audio API</Badge>
-            <Badge>Cloudflare Pages</Badge>
+            <Badge>Cloudflare Workers</Badge>
             <Badge tone="accent">CC BY-NC-SA 4.0</Badge>
           </div>
           <p className="mt-3 max-w-xs text-[12px] leading-relaxed text-titanium-500">

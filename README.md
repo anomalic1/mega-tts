@@ -10,9 +10,9 @@ Rendered in memory. Stored exclusively on your device.
 [![React 19](https://img.shields.io/badge/React-19-61dafb)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6)](https://www.typescriptlang.org)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-v4-38bdf8)](https://tailwindcss.com)
-[![Cloudflare Pages](https://img.shields.io/badge/Deploy-Cloudflare%20Pages-f38020)](https://pages.cloudflare.com)
+[![Deploy to Cloudflare](https://img.shields.io/badge/Deploy-Cloudflare-f38020)](https://deploy.workers.cloudflare.com/?url=https://github.com/anomalic1/mega-tts)
 
-[![Deploy to Cloudflare Pages](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/anomalic1/mega-tts)
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/anomalic1/mega-tts)
 
 </div>
 
@@ -121,21 +121,31 @@ Storage reads or writes).
 
 ## Deploying to Cloudflare Pages
 
-**One click:** use the button above, or
-[deploy.workers.cloudflare.com](https://deploy.workers.cloudflare.com/?url=https://github.com/anomalic1/mega-tts)
-with this repository.
+Open [dash.cloudflare.com](https://dash.cloudflare.com) → **Workers & Pages →
+Create → Pages → Connect to Git**, select this repository, then:
 
-**Manual:** Cloudflare Pages → Create project → Connect to Git → select this
-repo, then:
-
-- **Framework preset:** Vite
+- **Framework preset:** Vite (or None — either works)
 - **Build command:** `npm run build`
 - **Build output directory:** `dist`
 - **Environment variables:** set `VITE_TTS_API_BASE_URL` (and optionally the
   `VITE_FIREBASE_*` keys) for **Production and Preview**
 
-There are no Node-specific runtime dependencies — the output is pure static
-assets.
+After the first deploy: **Custom domains → Set up a domain → `zydit.in`**.
+`public/_headers` (security headers) is picked up automatically by Pages.
+
+## Alternative: Cloudflare Workers
+
+The same static output can be deployed as a **Worker with static assets**
+(Cloudflare's newer hosting model) — the repo ships a `wrangler.jsonc` for
+this, plus the deploy button at the top of this README:
+
+```bash
+npm run deploy        # builds, then `wrangler deploy`
+```
+
+Workers Builds settings if configuring by hand: build command `npm run build`,
+deploy command `npx wrangler deploy`. Note that `_headers` only applies on
+Pages, not Workers static assets.
 
 ## Troubleshooting
 
