@@ -13,6 +13,14 @@ export interface SpeechRequestOptions {
 
 const ELEVEN_MODEL_PREFIX = 'eleven_'
 
+/**
+ * Managed mode: the deployment runs the same-origin /api/speech Pages
+ * Function (functions/api/speech.ts), which holds the real endpoint, key,
+ * and model ID server-side. The user-facing model label stays
+ * "ElevenLabs Multilingual v2" regardless of what the server actually calls.
+ */
+export const isManagedApi = import.meta.env.VITE_MANAGED_API === 'true'
+
 function buildBody(params: GenerationParams): Record<string, unknown> {
   const body: Record<string, unknown> = {
     model: params.model,
@@ -75,7 +83,9 @@ export async function synthesizeSpeech(
     'Content-Type': 'application/json',
     Accept: 'audio/mpeg',
   }
-  if (options.apiKey?.trim()) {
+  // In managed mode the proxy injects credentials server-side; the client
+  // never attaches (or possesses) a key.
+  if (!isManagedApi && options.apiKey?.trim()) {
     headers.Authorization = `Bearer ${options.apiKey.trim()}`
   }
 

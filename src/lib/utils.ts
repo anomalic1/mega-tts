@@ -10,6 +10,9 @@ const SPEECH_PATH = '/v1/audio/speech'
 
 /**
  * Sanitize a user- or env-supplied base URL into a full speech endpoint.
+ * In managed mode (VITE_MANAGED_API="true") requests instead go to the
+ * same-origin /api/speech Pages Function, which holds the real endpoint,
+ * key, and model ID server-side.
  *
  *   https://host                    → https://host/v1/audio/speech
  *   https://host/                   → https://host/v1/audio/speech
@@ -18,6 +21,8 @@ const SPEECH_PATH = '/v1/audio/speech'
  *   ""                              → ""  (caller shows a calm hint, never an error)
  */
 export function resolveSpeechEndpoint(input?: string): string {
+  if (import.meta.env.VITE_MANAGED_API === 'true') return '/api/speech'
+
   const raw = (input ?? import.meta.env.VITE_TTS_API_BASE_URL ?? '').trim()
   if (!raw) return ''
 

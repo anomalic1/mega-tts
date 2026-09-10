@@ -104,19 +104,60 @@ npm run dev
 Then open the studio, click the gear icon, and point it at your
 OpenAI-compatible speech endpoint.
 
-### Environment variables
+### Managed API proxy (hide your key & model ID)
+
+A production deployment can keep the real upstream endpoint, API key, and raw
+model ID completely out of the browser:
+
+```
+Browser ──POST /api/speech──▶ Pages Function ──POST──▶ Your gateway
+        ◀─────── audio (streamed through, never stored) ───────┘
+```
+
+The frontend calls a same-origin **Pages Function** (`functions/api/speech.ts`)
+which injects the server-side `TTS_*` variables and streams the audio back.
+Users only ever see "ElevenLabs Multilingual v2" in the model selector.
+
+To enable, set these in Cloudflare Pages → Settings → Environment variables
+(Production + Preview):
+
+| Variable | Server-side? | Purpose |
+|---|---|---|
+| `VITE_MANAGED_API` | no (public flag) | `"true"` routes all generation through `/api/speech` |
+| `TTS_API_BASE_URL` | **yes — never in the bundle** | Your gateway's base URL (`/v1/audio/speech` auto-appended) |
+| `TTS_API_KEY` | **yes — never in the bundle** | Bearer key, attached only by the Function |
+| `TTS_MODEL_ID` | **yes — never in the bundle** | The real model ID your gateway calls (UI still shows "Multilingual v2") |
+
+Bonus: because the browser talks only to your own domain, CORS problems with
+the upstream endpoint disappear entirely. The audio still never touches disk
+anywhere — the Function is a pure pass-through with `Cache-Control: no-store`.
+
+> Local testing of managed mode: `npm run build && npx wrangler pages dev`
+> (the Function only runs under Pages, not under plain `vite`).
+
+## Environment variables
+
+Two kinds — the distinction matters:
 
 All optional. The app degrades gracefully with none of them set.
 
-| Variable | Purpose |
-|---|---|
-| `VITE_TTS_API_BASE_URL` | Default speech endpoint; `/v1/audio/speech` auto-appended |
-| `VITE_FIREBASE_API_KEY` | Firebase web config — enables auth (see below) |
-| `VITE_FIREBASE_AUTH_DOMAIN` | `xxx.firebaseapp.com` |
-| `VITE_FIREBASE_PROJECT_ID` | Firebase project ID |
-| `VITE_FIREBASE_STORAGE_BUCKET` | Optional |
-| `VITE_FIREBASE_MESSAGING_SENDER_ID` | Optional |
-| `VITE_FIREBASE_APP_ID` | Required with the others to enable auth |
+| Variable | Kind | Purpose |
+|---|---|---|
+| `VITE_MANAGED_API` | public | `"true"` = use the `/api/speech` proxy (see above) |
+| `TTS_API_BASE_URL` | **server-side** | Real gateway base URL — only the proxy reads it |
+| `TTS_API_KEY` | **server-side** | Real API key — only the proxy attaches it |
+| `TTS_MODEL_ID` | **server-side** | Real model ID — the UI label never changes |
+| `VITE_TTS_API_BASE_URL` | public | Default endpoint for unmanaged mode; users can override in-app |
+| `VITE_FIREBASE_API_KEY` | public | Firebase web config — enables auth (see below) |
+| `VITE_FIREBASE_AUTH_DOMAIN` | public | `xxx.firebaseapp.com` |
+| `VITE_FIREBASE_PROJECT_ID` | public | Firebase project ID |
+| `VITE_FIREBASE_STORAGE_BUCKET` | public | Optional |
+| `VITE_FIREBASE_MESSAGING_SENDER_ID` | public | Optional |
+| `VITE_FIREBASE_APP_ID` | public | Required with the others to enable auth |
+
+All `VITE_*` variables end up in the client bundle and are readable by
+visitors — that is why the real key and model ID live in the server-side
+`TTS_*` variables instead.
 
 ### Firebase auth setup
 

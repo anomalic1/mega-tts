@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react'
-import { KeyRound, Link2, RotateCcw, Sparkles, X } from 'lucide-react'
+import { KeyRound, Link2, RotateCcw, Server, Sparkles, X } from 'lucide-react'
 import { Dialog } from '@/components/ui/Dialog'
 import { Button } from '@/components/ui/Button'
 import { useSettings, type CustomVoice } from '@/context/SettingsContext'
+import { isManagedApi } from '@/lib/api'
 import { resolveSpeechEndpoint } from '@/lib/utils'
 
 /**
- * API Settings: custom endpoint (auto-sanitized), optional Bearer key
- * (sessionStorage only), and custom voice IDs. Missing env never errors —
- * it just means the user should enter an endpoint here.
+ * API Settings. In managed mode the host runs the /api/speech proxy, so
+ * users see a simple explainer instead of endpoint/key fields — the real
+ * API info lives server-side and never reaches the browser. Custom voice
+ * IDs remain available in both modes.
  */
 export function ApiSettingsDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const settings = useSettings()
@@ -46,63 +48,84 @@ export function ApiSettingsDialog({ open, onClose }: { open: boolean; onClose: (
       open={open}
       onClose={onClose}
       title="API Settings"
-      description="Point Zydit at any OpenAI-compatible speech endpoint. Everything here stays in your browser."
+      description={
+        isManagedApi
+          ? 'This deployment runs a managed speech endpoint — nothing to configure, nothing to paste.'
+          : 'Point Zydit at any OpenAI-compatible speech endpoint. Everything here stays in your browser.'
+      }
       className="max-w-xl"
     >
       <div className="space-y-6">
-        {/* Endpoint */}
-        <div className="space-y-2">
-          <label htmlFor="api-base-url" className="flex items-center gap-2 text-[13px] font-medium text-zinc-200">
-            <Link2 className="size-3.5 text-titanium-500" aria-hidden />
-            API Base URL
-          </label>
-          <div className="flex gap-2">
-            <input
-              id="api-base-url"
-              value={baseUrlDraft}
-              onChange={(e) => setBaseUrlDraft(e.target.value)}
-              placeholder={settings.envBaseUrl || 'https://your-gateway.example.com'}
-              spellCheck={false}
-              autoComplete="off"
-              className="h-10 flex-1 rounded-xl border border-white/10 bg-white/[0.03] px-3 font-mono text-xs text-zinc-200 placeholder:text-titanium-500/60 focus:border-accent/40 focus:outline-none"
-            />
-            {settings.baseUrl && (
-              <Button variant="outline" size="sm" onClick={() => setBaseUrlDraft('')} title="Use the server default">
-                <RotateCcw className="size-3.5" aria-hidden />
-                Reset
-              </Button>
-            )}
+        {isManagedApi ? (
+          <div className="flex items-start gap-3 rounded-2xl border border-accent/25 bg-accent-soft p-4">
+            <Server className="mt-0.5 size-4 shrink-0 text-accent" aria-hidden />
+            <div className="space-y-1.5 text-[13px] leading-relaxed">
+              <p className="font-medium text-zinc-100">Managed API — you&apos;re all set.</p>
+              <p className="text-titanium-400">
+                Speech is generated through Zydit&apos;s own secure endpoint. No
+                API key needed, and your audio still never leaves your device
+                except to be rendered.
+              </p>
+              <p className="font-mono text-[11px] text-titanium-500">POST /api/speech</p>
+            </div>
           </div>
-          <p className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2 font-mono text-[11px] leading-relaxed text-titanium-500">
-            <span className="text-titanium-400">Will call:</span>{' '}
-            {preview || <span className="italic">no endpoint yet — set one above</span>}
-          </p>
-          <p className="text-[11px] text-titanium-500">
-            Leave empty to use the server default{settings.envBaseUrl ? '' : ' (none configured — enter a URL above)'}.
-            {' '}<code className="text-titanium-400">/v1/audio/speech</code> is appended automatically if missing.
-          </p>
-        </div>
+        ) : (
+          <>
+            {/* Endpoint */}
+            <div className="space-y-2">
+              <label htmlFor="api-base-url" className="flex items-center gap-2 text-[13px] font-medium text-zinc-200">
+                <Link2 className="size-3.5 text-titanium-500" aria-hidden />
+                API Base URL
+              </label>
+              <div className="flex gap-2">
+                <input
+                  id="api-base-url"
+                  value={baseUrlDraft}
+                  onChange={(e) => setBaseUrlDraft(e.target.value)}
+                  placeholder={settings.envBaseUrl || 'https://your-gateway.example.com'}
+                  spellCheck={false}
+                  autoComplete="off"
+                  className="h-10 flex-1 rounded-xl border border-white/10 bg-white/[0.03] px-3 font-mono text-xs text-zinc-200 placeholder:text-titanium-500/60 focus:border-accent/40 focus:outline-none"
+                />
+                {settings.baseUrl && (
+                  <Button variant="outline" size="sm" onClick={() => setBaseUrlDraft('')} title="Use the server default">
+                    <RotateCcw className="size-3.5" aria-hidden />
+                    Reset
+                  </Button>
+                )}
+              </div>
+              <p className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2 font-mono text-[11px] leading-relaxed text-titanium-500">
+                <span className="text-titanium-400">Will call:</span>{' '}
+                {preview || <span className="italic">no endpoint yet — set one above</span>}
+              </p>
+              <p className="text-[11px] text-titanium-500">
+                Leave empty to use the server default{settings.envBaseUrl ? '' : ' (none configured — enter a URL above)'}.
+                {' '}<code className="text-titanium-400">/v1/audio/speech</code> is appended automatically if missing.
+              </p>
+            </div>
 
-        {/* API key */}
-        <div className="space-y-2">
-          <label htmlFor="api-key" className="flex items-center gap-2 text-[13px] font-medium text-zinc-200">
-            <KeyRound className="size-3.5 text-titanium-500" aria-hidden />
-            Bearer API Key <span className="font-normal text-titanium-500">(optional)</span>
-          </label>
-          <input
-            id="api-key"
-            type="password"
-            value={keyDraft}
-            onChange={(e) => setKeyDraft(e.target.value)}
-            placeholder="xi-api-key or Bearer token"
-            autoComplete="off"
-            spellCheck={false}
-            className="h-10 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 font-mono text-xs text-zinc-200 placeholder:text-titanium-500/60 focus:border-accent/40 focus:outline-none"
-          />
-          <p className="text-[11px] text-titanium-500">
-            Stored only in <span className="text-titanium-400">sessionStorage</span> — it is wiped the moment you close this tab, and never sent anywhere except your chosen endpoint.
-          </p>
-        </div>
+            {/* API key */}
+            <div className="space-y-2">
+              <label htmlFor="api-key" className="flex items-center gap-2 text-[13px] font-medium text-zinc-200">
+                <KeyRound className="size-3.5 text-titanium-500" aria-hidden />
+                Bearer API Key <span className="font-normal text-titanium-500">(optional)</span>
+              </label>
+              <input
+                id="api-key"
+                type="password"
+                value={keyDraft}
+                onChange={(e) => setKeyDraft(e.target.value)}
+                placeholder="xi-api-key or Bearer token"
+                autoComplete="off"
+                spellCheck={false}
+                className="h-10 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 font-mono text-xs text-zinc-200 placeholder:text-titanium-500/60 focus:border-accent/40 focus:outline-none"
+              />
+              <p className="text-[11px] text-titanium-500">
+                Stored only in <span className="text-titanium-400">sessionStorage</span> — it is wiped the moment you close this tab, and never sent anywhere except your chosen endpoint.
+              </p>
+            </div>
+          </>
+        )}
 
         {/* Custom voices */}
         <div className="space-y-2">
@@ -153,10 +176,12 @@ export function ApiSettingsDialog({ open, onClose }: { open: boolean; onClose: (
           )}
         </div>
 
-        <div className="flex justify-end gap-2 border-t border-white/[0.06] pt-4">
-          <Button variant="ghost" onClick={onClose}>Cancel</Button>
-          <Button variant="primary" onClick={save}>Save</Button>
-        </div>
+        {!isManagedApi && (
+          <div className="flex justify-end gap-2 border-t border-white/[0.06] pt-4">
+            <Button variant="ghost" onClick={onClose}>Cancel</Button>
+            <Button variant="primary" onClick={save}>Save</Button>
+          </div>
+        )}
       </div>
     </Dialog>
   )
