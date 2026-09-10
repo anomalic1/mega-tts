@@ -119,8 +119,8 @@ All optional. The app degrades gracefully with none of them set.
 
 ### Firebase auth setup
 
-See **[docs/FIREBASE_SETUP.md](docs/FIREBASE_SETUP.md)** — enabling Google and
-email/password sign-in, authorized domains for `zydit.in`, and the
+See **[docs/FIREBASE_SETUP.md](docs/FIREBASE_SETUP.md)** — enabling Google
+sign-in (the only provider), authorized domains for `zydit.in`, and the
 locked-down security rules posture (this app performs **zero** Firestore /
 Storage reads or writes).
 

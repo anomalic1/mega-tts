@@ -66,22 +66,6 @@ export async function signInWithGooglePopup(): Promise<AuthUser> {
   return toAuthUser(cred.user)
 }
 
-export async function signUpWithEmail(email: string, password: string): Promise<AuthUser> {
-  const auth = await getFirebaseAuth()
-  if (!auth) throw new Error('Sign-in is not available in this build.')
-  const { createUserWithEmailAndPassword } = await import('firebase/auth')
-  const cred = await createUserWithEmailAndPassword(auth, email, password)
-  return toAuthUser(cred.user)
-}
-
-export async function signInWithEmail(email: string, password: string): Promise<AuthUser> {
-  const auth = await getFirebaseAuth()
-  if (!auth) throw new Error('Sign-in is not available in this build.')
-  const { signInWithEmailAndPassword } = await import('firebase/auth')
-  const cred = await signInWithEmailAndPassword(auth, email, password)
-  return toAuthUser(cred.user)
-}
-
 /** Subscribe to auth state. Returns an unsubscribe fn; callback fires with null guests. */
 export async function observeAuth(cb: (user: AuthUser | null) => void): Promise<() => void> {
   const auth = await getFirebaseAuth()
@@ -104,23 +88,16 @@ export async function signOutUser(): Promise<void> {
 export function friendlyAuthError(err: unknown): string {
   const code = (err as { code?: string })?.code ?? ''
   switch (code) {
-    case 'auth/invalid-email':
-      return 'That email address doesn\'t look right.'
-    case 'auth/missing-password':
-    case 'auth/weak-password':
-      return 'Passwords need at least 6 characters.'
-    case 'auth/email-already-in-use':
-      return 'That email is already registered — try signing in.'
-    case 'auth/invalid-credential':
-    case 'auth/wrong-password':
-    case 'auth/user-not-found':
-      return 'Email or password is incorrect.'
     case 'auth/popup-closed-by-user':
       return 'The sign-in window was closed before finishing.'
     case 'auth/popup-blocked':
       return 'Your browser blocked the sign-in popup — allow popups and retry.'
+    case 'auth/cancelled-popup-request':
+      return 'Another sign-in window is already open.'
     case 'auth/network-request-failed':
       return 'Network issue reaching the sign-in service.'
+    case 'auth/unauthorized-domain':
+      return 'This domain is not authorized for sign-in — hosts must add it in the Firebase console.'
     default:
       return 'Something went wrong signing in. Please try again.'
   }

@@ -1,10 +1,10 @@
 # Firebase Auth Setup Guide
 
-Zydit TTS uses Firebase **Authentication only**. The app performs zero
+Zydit TTS uses Firebase **Authentication only**, with **Google as the single
+sign-in provider** — one click, no forms, no passwords. The app performs zero
 Firestore reads/writes and zero Cloud Storage access — your audio and history
-never touch Firebase. Auth exists purely as optional convenience (syncing
-preferences across devices in the future); **guest mode is first-class and the
-entire studio works without an account.**
+never touch Firebase. Auth exists purely as optional convenience; **guest
+mode is first-class and the entire studio works without an account.**
 
 If you skip this guide entirely, the app runs fine — it will simply show a
 "running fully local" note in the sign-in dialog.
@@ -41,28 +41,22 @@ are all present. Anything missing → silent guest mode, no errors.
 variables** → add each variable for **both Production and Preview**, then
 redeploy.
 
-## 4. Enable sign-in providers
+## 4. Enable the Google sign-in provider
 
 In the Firebase console: **Build → Authentication → Get started → Sign-in method**
-
-### Google
 
 1. Enable **Google**
 2. Pick a project support email
 3. Save — Firebase auto-provisions the OAuth 2.0 client ID
 
-The app uses `signInWithPopup`, which works out of the box once Google is
-enabled and your domain is authorized (step 5).
+That's the only provider the frontend uses. The app signs in with
+`signInWithPopup`, which works out of the box once Google is enabled and your
+domain is authorized (step 5).
 
 > **Note on One-Tap:** Google One-Tap requires registering exact authorized
 > origins in the Google Cloud console and behaves inconsistently across
 > browsers; this app ships popup sign-in as the reliable default. One-Tap is
 > a future enhancement.
-
-### Email/Password
-
-1. Enable **Email/Password** (leave "Email link" off)
-2. Save — no extra config needed
 
 ## 5. Authorize your domains
 
@@ -125,7 +119,7 @@ a public web app.
 
 1. Redeploy with the `VITE_FIREBASE_*` variables set
 2. Open the site → **Sign in**
-3. You should see "Continue with Google" and the email form
+3. You should see a single "Continue with Google" button (plus guest mode)
 4. Google sign-in should open a popup and return you signed in
 5. With variables removed, the same dialog shows the "running fully local"
    guest note — confirming graceful degradation works

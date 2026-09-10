@@ -11,17 +11,16 @@ import {
   friendlyAuthError,
   isFirebaseEnabled,
   observeAuth,
-  signInWithEmail,
   signInWithGooglePopup,
   signOutUser,
-  signUpWithEmail,
 } from '@/lib/firebase'
 import type { AuthMode, AuthUser } from '@/types'
 
 /**
- * Auth state. Guest is a first-class mode, not a demo — the entire app is
- * functional without an account. When Firebase keys are absent, the modal
- * shows guest-only with a quiet note, never an error.
+ * Auth state. Google is the only account provider; guest is a first-class
+ * mode — the entire app is functional without an account. When Firebase
+ * keys are absent, the modal shows guest-only with a quiet note, never an
+ * error.
  */
 
 interface AuthContextValue {
@@ -29,8 +28,6 @@ interface AuthContextValue {
   mode: AuthMode
   authAvailable: boolean
   signInGoogle: () => Promise<void>
-  signInEmail: (email: string, password: string) => Promise<void>
-  signUpEmail: (email: string, password: string) => Promise<void>
   signOut: () => Promise<void>
   /** Returns a friendly message for auth failures (used by the modal). */
   describeError: (err: unknown) => string
@@ -60,14 +57,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await signInWithGooglePopup()
   }, [])
 
-  const signInEmail = useCallback(async (email: string, password: string) => {
-    await signInWithEmail(email, password)
-  }, [])
-
-  const signUpEmail = useCallback(async (email: string, password: string) => {
-    await signUpWithEmail(email, password)
-  }, [])
-
   const signOut = useCallback(async () => {
     await signOutUser()
     setUser(null)
@@ -81,12 +70,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       mode: user ? 'firebase' : 'guest',
       authAvailable: isFirebaseEnabled,
       signInGoogle,
-      signInEmail,
-      signUpEmail,
       signOut,
       describeError,
     }),
-    [user, signInGoogle, signInEmail, signUpEmail, signOut, describeError],
+    [user, signInGoogle, signOut, describeError],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
