@@ -5,6 +5,7 @@ import { ArrowLeft, Ghost, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { GoogleIcon } from '@/components/ui/icons'
 import { useAuth } from '@/context/AuthContext'
+import { REQUIRE_SIGN_IN } from '@/config'
 
 /**
  * Sign-in page. Google is the only account option; guest mode is one tap
@@ -48,8 +49,9 @@ export function SignInPage() {
 
         <h1 className="text-xl font-semibold tracking-tight">Welcome to Zydit TTS</h1>
         <p className="mt-2 text-[13px] leading-relaxed text-titanium-400">
-          Sign in to keep your preferences across visits — or continue as a
-          guest. Either way, your audio never leaves this device.
+          {REQUIRE_SIGN_IN
+            ? 'Sign in with Google to use the studio. Your audio still never leaves this device.'
+            : 'Sign in to keep your preferences across visits — or continue as a guest. Either way, your audio never leaves this device.'}
         </p>
 
         <div className="mt-7">
@@ -104,21 +106,24 @@ export function SignInPage() {
           ) : (
             <div className="space-y-4">
               <p className="text-[13px] leading-relaxed text-titanium-400">
-                This deployment isn&apos;t configured with a sign-in service, so
-                Zydit is running fully local — which is kind of the point.
+                {REQUIRE_SIGN_IN
+                  ? 'This deployment requires an account, but sign-in isn’t configured yet. The host needs to set the VITE_FIREBASE_* environment variables (see docs/FIREBASE_SETUP.md in the repository) and redeploy.'
+                  : 'This deployment isn’t configured with a sign-in service, so Zydit is running fully local — which is kind of the point.'}
               </p>
-              <p className="text-xs text-titanium-500">
-                Hosts can enable Google sign-in by setting the{' '}
-                <code className="text-titanium-400">VITE_FIREBASE_*</code>{' '}
-                environment variables. See{' '}
-                <code className="text-titanium-400">docs/FIREBASE_SETUP.md</code> in
-                the repository.
-              </p>
+              {!REQUIRE_SIGN_IN && (
+                <p className="text-xs text-titanium-500">
+                  Hosts can enable Google sign-in by setting the{' '}
+                  <code className="text-titanium-400">VITE_FIREBASE_*</code>{' '}
+                  environment variables. See{' '}
+                  <code className="text-titanium-400">docs/FIREBASE_SETUP.md</code> in
+                  the repository.
+                </p>
+              )}
             </div>
           )}
         </div>
 
-        {!user && (
+        {!user && !REQUIRE_SIGN_IN && (
           <div className="mt-6 border-t border-white/[0.06] pt-4">
             <Button variant="ghost" className="w-full" onClick={() => navigate('/studio')}>
               <Ghost className="size-4" aria-hidden />

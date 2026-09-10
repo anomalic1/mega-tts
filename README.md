@@ -32,7 +32,7 @@ history lives only in this browser's IndexedDB.
 - **Dynamic endpoint resolver** — paste any base URL; `/v1/audio/speech` is appended automatically
 - **Real-time canvas visualizer** driven by the Web Audio API `AnalyserNode`
 - **Local-only history** (IndexedDB via Dexie) with one-click purge
-- **Optional Firebase auth** with a first-class guest mode — the app works fully without an account
+- **Google sign-in gate** — the studio requires a one-click Google account; guest access can be re-enabled with one flag (`src/config.ts` → `REQUIRE_SIGN_IN = false`)
 - **Lossless `.mp3` download** — a byte-for-byte copy of what the engine rendered
 
 ## Architecture
@@ -121,7 +121,8 @@ All optional. The app degrades gracefully with none of them set.
 ### Firebase auth setup
 
 See **[docs/FIREBASE_SETUP.md](docs/FIREBASE_SETUP.md)** — enabling Google
-sign-in (the only provider), authorized domains for `zydit.in`, and the
+sign-in (the only provider, and required to use the studio), authorized
+domains for `zydit.in`, and the
 locked-down security rules posture (this app performs **zero** Firestore /
 Storage reads or writes).
 

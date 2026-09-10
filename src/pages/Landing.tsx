@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowRight, AudioWaveform, Database, Ghost, Lock, ShieldCheck } from 'lucide-react'
+import { ArrowRight, AudioWaveform, Database, Lock, ShieldCheck, UserCheck } from 'lucide-react'
 import { PrivacyBadge } from '@/components/PrivacyBadge'
+import { REQUIRE_SIGN_IN } from '@/config'
 
 const FEATURES = [
   {
@@ -20,9 +21,9 @@ const FEATURES = [
     body: 'API keys live in sessionStorage and are wiped the moment you close the tab.',
   },
   {
-    icon: Ghost,
-    title: 'Guest-first',
-    body: 'No account required. The full studio works without signing in — forever.',
+    icon: UserCheck,
+    title: 'One-click sign-in',
+    body: 'Sign in with Google and start speaking — no forms, no passwords, nothing to remember.',
   },
 ]
 
@@ -72,7 +73,9 @@ export function Landing() {
               aria-hidden
             />
           </Link>
-          <p className="text-xs text-titanium-500">No account needed — try it as a guest.</p>
+          <p className="text-xs text-titanium-500">
+            {REQUIRE_SIGN_IN ? 'Free Google sign-in required to use the studio.' : 'No account needed — try it as a guest.'}
+          </p>
         </motion.div>
       </section>
 

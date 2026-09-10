@@ -27,9 +27,11 @@ interface AuthContextValue {
   user: AuthUser | null
   mode: AuthMode
   authAvailable: boolean
+  /** True until the first auth-state callback resolves (redirect guard). */
+  initializing: boolean
   signInGoogle: () => Promise<void>
   signOut: () => Promise<void>
-  /** Returns a friendly message for auth failures (used by the modal). */
+  /** Returns a friendly message for auth failures (used by the sign-in page). */
   describeError: (err: unknown) => string
 }
 
@@ -37,12 +39,15 @@ const AuthContext = createContext<AuthContextValue | null>(null)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null)
+  const [initializing, setInitializing] = useState(true)
 
   useEffect(() => {
     let unsubscribe: (() => void) | null = null
     let cancelled = false
     void observeAuth((u) => {
-      if (!cancelled) setUser(u)
+      if (cancelled) return
+      setUser(u)
+      setInitializing(false)
     }).then((unsub) => {
       if (cancelled) unsub()
       else unsubscribe = unsub
@@ -69,11 +74,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       user,
       mode: user ? 'firebase' : 'guest',
       authAvailable: isFirebaseEnabled,
+      initializing,
       signInGoogle,
       signOut,
       describeError,
     }),
-    [user, signInGoogle, signOut, describeError],
+    [user, initializing, signInGoogle, signOut, describeError],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

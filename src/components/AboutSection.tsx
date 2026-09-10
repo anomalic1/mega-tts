@@ -31,8 +31,8 @@ const CARDS = [
   },
   {
     icon: HeartHandshake,
-    title: 'Guest-first',
-    body: 'No account required. Signing in is optional convenience — the full studio works without one, forever.',
+    title: 'One-click sign-in',
+    body: 'A single Google sign-in gets you into the studio — no forms, no passwords, no friction.',
   },
 ]
 
