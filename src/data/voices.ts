@@ -1,81 +1,72 @@
-import type { VoiceAccent, VoiceTone, VoicePreset } from '@/types'
+import type { VoiceAccent, VoiceAge, VoiceArchetype, VoiceLanguage, VoicePreset } from '@/types'
 
 /**
- * Built-in voice catalog — 46 curated ElevenLabs voices.
- * Tags (gender / accent / tones) are derived from each voice's description.
+ * Built-in voice catalog — the 20 current-generation ElevenLabs multilingual
+ * voices, with gender / accent / age / archetype tags and per-voice language
+ * support derived from the multilingual v2 locale matrix.
  * Extend at runtime with custom voice IDs via the API Settings dialog.
  */
 
-export const ACCENTS: readonly VoiceAccent[] = [
-  'American',
-  'British',
-  'Australian',
-  'Italian',
-  'Swedish',
-  'Neutral',
+export const ACCENTS: readonly VoiceAccent[] = ['American', 'British', 'Australian']
+
+export const AGES: readonly VoiceAge[] = ['Young', 'Young Adult', 'Middle-Aged', 'Older']
+
+export const ARCHETYPES: readonly VoiceArchetype[] = [
+  'conversational',
+  'narration',
+  'character',
 ]
 
-export const TONES: readonly VoiceTone[] = [
-  'narration',
-  'conversational',
-  'character',
-  'news',
-  'audiobook',
-  'commercial',
-  'animation',
-  'documentary',
+export interface LanguageInfo {
+  code: VoiceLanguage
+  label: string
+}
+
+export const LANGUAGES: readonly LanguageInfo[] = [
+  { code: 'en', label: 'English' },
+  { code: 'fr', label: 'French' },
+  { code: 'es', label: 'Spanish' },
+  { code: 'de', label: 'German' },
+  { code: 'hi', label: 'Hindi' },
+  { code: 'zh', label: 'Chinese' },
+  { code: 'ar', label: 'Arabic' },
+  { code: 'pt', label: 'Portuguese' },
+  { code: 'it', label: 'Italian' },
+  { code: 'ja', label: 'Japanese' },
+  { code: 'nl', label: 'Dutch' },
+  { code: 'pl', label: 'Polish' },
+  { code: 'cs', label: 'Czech' },
+  { code: 'sk', label: 'Slovak' },
+  { code: 'sv', label: 'Swedish' },
+  { code: 'tr', label: 'Turkish' },
+  { code: 'fil', label: 'Filipino' },
+  { code: 'ro', label: 'Romanian' },
 ]
 
 export const VOICE_CATALOG: readonly VoicePreset[] = [
-  { id: '21m00Tcm4TlvDq8ikWAMC', name: 'Rachel', description: 'Calm, clear American female', gender: 'Female', accent: 'American', tones: ['conversational'], source: 'builtin' },
-  { id: 'AZnzlk1XvdvUeBnXmlld', name: 'Domi', description: 'Strong, confident American female', gender: 'Female', accent: 'American', tones: ['conversational'], source: 'builtin' },
-  { id: 'EXAVITQu4vr4xnSDxMaL', name: 'Bella', description: 'Soft, expressive American female', gender: 'Female', accent: 'American', tones: ['conversational', 'narration'], source: 'builtin' },
-  { id: 'ErXwobaYiN019PkySvjV', name: 'Antoni', description: 'Well-rounded, friendly American male', gender: 'Male', accent: 'American', tones: ['conversational'], source: 'builtin' },
-  { id: 'MF3mGyEYCl7XYWbV9V6O', name: 'Elli', description: 'Emotional, young American female', gender: 'Female', accent: 'American', tones: ['conversational', 'character'], source: 'builtin' },
-  { id: 'TxGEqnHWrfWFTfGW9XjX', name: 'Josh', description: 'Deep, conversational American male', gender: 'Male', accent: 'American', tones: ['conversational'], source: 'builtin' },
-  { id: 'VR6AewLTigWG4xSOukaG', name: 'Arnold', description: 'Crisp, narrator American male', gender: 'Male', accent: 'American', tones: ['narration'], source: 'builtin' },
-  { id: 'pNInz6obpgDQGcFmaJgB', name: 'Adam', description: 'Deep, narrative American male', gender: 'Male', accent: 'American', tones: ['narration'], source: 'builtin' },
-  { id: 'yoZ06aMxZJJ28mfd3POQ', name: 'Sam', description: 'Raspy, dynamic American male', gender: 'Male', accent: 'American', tones: ['character'], source: 'builtin' },
-  { id: '9BWtsMINqrJLrRacOk9x', name: 'Aria', description: 'Expressive, warm American female', gender: 'Female', accent: 'American', tones: ['narration', 'conversational'], source: 'builtin' },
-  { id: 'piTKgcLEGmPE4e6mEKli', name: 'Nicole', description: 'Soft, whispery American female', gender: 'Female', accent: 'American', tones: ['narration'], source: 'builtin' },
-  { id: 'z9fAnlkpzviPz146aGWa', name: 'Glinda', description: 'Theatrical, dramatic female', gender: 'Female', accent: 'Neutral', tones: ['character'], source: 'builtin' },
-  { id: '2EiwWnXFnvU5JabPnv8n', name: 'Clyde', description: 'Gruff, character American male', gender: 'Male', accent: 'American', tones: ['character'], source: 'builtin' },
-  { id: 'CYw3kZ02Hs0563khs1Fj', name: 'Dave', description: 'Conversational, British Essex male', gender: 'Male', accent: 'British', tones: ['conversational'], source: 'builtin' },
-  { id: 'D38z5RcWu1voky8WS1ja', name: 'Fin', description: 'Energetic, young male', gender: 'Male', accent: 'Neutral', tones: ['conversational'], source: 'builtin' },
-  { id: 'jsCqWAovK2LkecY7zXl4', name: 'Freya', description: 'Expressive female', gender: 'Female', accent: 'Neutral', tones: ['conversational'], source: 'builtin' },
-  { id: 'jBpfuIE2acCO8z3wKNLl', name: 'Gigi', description: 'Youthful, child-like animation voice', gender: 'Female', accent: 'Neutral', tones: ['animation'], source: 'builtin' },
-  { id: 'zcAOhNBS3c14rBihAFp1', name: 'Giovanni', description: 'Foreign, Italian-accented male', gender: 'Male', accent: 'Italian', tones: ['character'], source: 'builtin' },
-  { id: 'oWAxZDxUOHqnQvUqPCE5', name: 'Grace', description: 'Southern American female', gender: 'Female', accent: 'American', tones: ['conversational'], source: 'builtin' },
-  { id: 'SOYHLrjzK2X1ezoPC6cr', name: 'Harry', description: 'Anxious, dramatic young male', gender: 'Male', accent: 'Neutral', tones: ['character'], source: 'builtin' },
-  { id: 'ZQe5CZNOzWyzPSCn5a3c', name: 'James', description: 'Calm, British news/narration male', gender: 'Male', accent: 'British', tones: ['news', 'narration'], source: 'builtin' },
-  { id: 'bVMeCyTHy58xNoL34h3p', name: 'Jeremy', description: 'Excited, upbeat American male', gender: 'Male', accent: 'American', tones: ['conversational'], source: 'builtin' },
-  { id: 't0jbIGfmCWtrdaEdqq93', name: 'Jessie', description: 'Raspy, mature female', gender: 'Female', accent: 'Neutral', tones: ['conversational'], source: 'builtin' },
-  { id: 'cgSgspJ2msm6clMCkdW9', name: 'Jessica', description: 'Expressive, conversational female', gender: 'Female', accent: 'Neutral', tones: ['conversational'], source: 'builtin' },
-  { id: 'cjVigY5qzO86Huf0OWal', name: 'Eric', description: 'Friendly, conversational middle-aged male', gender: 'Male', accent: 'Neutral', tones: ['conversational'], source: 'builtin' },
-  { id: 'iP95p4xoKVk53GoZ742B', name: 'Chris', description: 'Casual, conversational American male', gender: 'Male', accent: 'American', tones: ['conversational'], source: 'builtin' },
-  { id: 'nPczCjzI2devNBz1zQrb', name: 'Brian', description: 'Deep, documentary narration male', gender: 'Male', accent: 'American', tones: ['documentary', 'narration'], source: 'builtin' },
-  { id: 'onwK4e9ZLuTAKqWW03F9', name: 'Daniel', description: 'Authoritative, British news anchor', gender: 'Male', accent: 'British', tones: ['news'], source: 'builtin' },
-  { id: 'pFZP5JQG7iQjIQuC4Bku', name: 'Lily', description: 'Warm, middle-aged British female', gender: 'Female', accent: 'British', tones: ['narration'], source: 'builtin' },
-  { id: 'pqHfZKP75CvOlQylNhV4', name: 'Bill', description: 'Trustworthy, mature/older American male', gender: 'Male', accent: 'American', tones: ['narration'], source: 'builtin' },
-  { id: 'bIHbv24MWmeRgasZH58o', name: 'Will', description: 'Friendly, casual young American male', gender: 'Male', accent: 'American', tones: ['conversational'], source: 'builtin' },
-  { id: 'JBFqnCBsd6RMkjVDRZzb', name: 'George', description: 'Crisp, British baritone', gender: 'Male', accent: 'British', tones: ['narration'], source: 'builtin' },
-  { id: 'N2lVS1w4EtoT3dr4eOWO', name: 'Callum', description: 'Friendly, natural speaker', gender: 'Male', accent: 'Neutral', tones: ['conversational'], source: 'builtin' },
-  { id: 'IKne3meq5aSn9XLyUdCD', name: 'Charlie', description: 'Casual, relaxed Australian male', gender: 'Male', accent: 'Australian', tones: ['conversational'], source: 'builtin' },
-  { id: 'XB0fDUnXU5powFXDhCwa', name: 'Charlotte', description: 'Seductive, mature Swedish/English female', gender: 'Female', accent: 'Swedish', tones: ['character'], source: 'builtin' },
-  { id: 'ThT5KcBeYPX3keUQqHPh', name: 'Dorothy', description: 'British story/narration female', gender: 'Female', accent: 'British', tones: ['narration'], source: 'builtin' },
-  { id: 'LcfcDJNUP1GQjkzn1xUU', name: 'Emily', description: 'Calm, meditative female', gender: 'Female', accent: 'Neutral', tones: ['narration'], source: 'builtin' },
-  { id: 'g5CIjZEefAph4nQFvHAz', name: 'Ethan', description: 'Youthful, narrator male', gender: 'Male', accent: 'Neutral', tones: ['narration'], source: 'builtin' },
-  { id: 'TX3LPaxmHKxFdv7VOQHJ', name: 'Liam', description: 'Articulate, neutral young male', gender: 'Male', accent: 'Neutral', tones: ['conversational'], source: 'builtin' },
-  { id: 'XrExE9yKIg1WjnnlVkGX', name: 'Matilda', description: 'Warm, pleasant female', gender: 'Female', accent: 'Neutral', tones: ['narration'], source: 'builtin' },
-  { id: 'flq6f7yk4E4fJM5XTYuZ', name: 'Michael', description: 'Natural audiobook narrator male', gender: 'Male', accent: 'Neutral', tones: ['audiobook'], source: 'builtin' },
-  { id: 'zrHiDhphv9ZnVXBqCLjz', name: 'Mimi', description: 'Cute, animated female', gender: 'Female', accent: 'Neutral', tones: ['animation'], source: 'builtin' },
-  { id: 'ODq5zmih8GrVes37Dizd', name: 'Patrick', description: 'Shouty, character voice', gender: 'Male', accent: 'Neutral', tones: ['character'], source: 'builtin' },
-  { id: '5Q0t7uMcjvnagumLfvZi', name: 'Paul', description: 'Grounded, professional male', gender: 'Male', accent: 'Neutral', tones: ['narration', 'commercial'], source: 'builtin' },
-  { id: 'pMsXgVXv3BLzUgSXRplE', name: 'Serena', description: 'Pleasant, commercial female', gender: 'Female', accent: 'Neutral', tones: ['commercial'], source: 'builtin' },
-  { id: 'GBv7mTt0atIp3Br8iCZE', name: 'Thomas', description: 'Calm, classic British male', gender: 'Male', accent: 'British', tones: ['narration'], source: 'builtin' },
+  { id: 'CwhRBWXzGAHq8TQ4Fs17', name: 'Roger', description: 'Laid-back American everyman', gender: 'Male', accent: 'American', age: 'Middle-Aged', archetype: 'conversational', languages: ['en', 'fr', 'es', 'de', 'nl'], source: 'builtin' },
+  { id: 'EXAVITQu4vr4xnSDxMaL', name: 'Sarah', description: 'Confident, warm young woman', gender: 'Female', accent: 'American', age: 'Young Adult', archetype: 'narration', languages: ['en', 'fr', 'es', 'hi', 'zh', 'ar'], source: 'builtin' },
+  { id: 'FGY2WhTYpPnrIDTdsKH5', name: 'Laura', description: 'Sunny, quirky young woman', gender: 'Female', accent: 'American', age: 'Young', archetype: 'conversational', languages: ['en', 'fr', 'es', 'de', 'zh', 'ar'], source: 'builtin' },
+  { id: 'SAz9YHcvj6GT2YYXdXww', name: 'River', description: 'Neutral, calm and steady', gender: 'Female', accent: 'American', age: 'Middle-Aged', archetype: 'conversational', languages: ['en', 'fr', 'es', 'zh', 'pt', 'it'], source: 'builtin' },
+  { id: 'SOYHLrjzK2X1ezoPC6cr', name: 'Harry', description: 'Fierce, rough-edged young man', gender: 'Male', accent: 'American', age: 'Young', archetype: 'character', languages: ['en'], source: 'builtin' },
+  { id: 'TX3LPaxmHKxFdv7VOQHJ', name: 'Liam', description: 'Energetic creator energy', gender: 'Male', accent: 'American', age: 'Young', archetype: 'character', languages: ['en', 'de', 'hi', 'zh', 'pt', 'pl', 'cs', 'tr'], source: 'builtin' },
+  { id: 'XrExE9yKIg1WjnnlVkGX', name: 'Matilda', description: 'Knowledgeable, engaging explainer', gender: 'Female', accent: 'American', age: 'Middle-Aged', archetype: 'narration', languages: ['en', 'fr', 'es', 'de', 'ar', 'it'], source: 'builtin' },
+  { id: 'bIHbv24MWmeRgasZH58o', name: 'Will', description: 'Chill, casual young man', gender: 'Male', accent: 'American', age: 'Young', archetype: 'conversational', languages: ['en', 'fr', 'es', 'de', 'zh', 'pt', 'cs', 'sk', 'sv', 'fil'], source: 'builtin' },
+  { id: 'cgSgspJ2msm6clMCkdW9', name: 'Jessica', description: 'Bright, playful young woman', gender: 'Female', accent: 'American', age: 'Young', archetype: 'conversational', languages: ['en', 'fr', 'es', 'de', 'hi', 'zh', 'ar', 'ja', 'cs'], source: 'builtin' },
+  { id: 'cjVigY5qzO86Huf0OWal', name: 'Eric', description: 'Smooth, agentic assistant voice', gender: 'Male', accent: 'American', age: 'Middle-Aged', archetype: 'conversational', languages: ['en', 'fr', 'es', 'de', 'zh', 'pt', 'sk'], source: 'builtin' },
+  { id: 'hpp4J3VqNfWAUOO0d1Us', name: 'Bella', description: 'Crisp, engaging presenter', gender: 'Female', accent: 'American', age: 'Middle-Aged', archetype: 'narration', languages: ['en'], source: 'builtin' },
+  { id: 'iP95p4xoKVk53GoZ742B', name: 'Chris', description: 'Natural, casual conversationalist', gender: 'Male', accent: 'American', age: 'Middle-Aged', archetype: 'conversational', languages: ['en', 'fr', 'hi', 'ar', 'pt', 'sv'], source: 'builtin' },
+  { id: 'nPczCjzI2devNBz1zQrb', name: 'Brian', description: 'Resonant, comforting storyteller', gender: 'Male', accent: 'American', age: 'Middle-Aged', archetype: 'narration', languages: ['en', 'fr', 'de', 'hi', 'zh', 'ar', 'pt', 'nl', 'sk', 'ro'], source: 'builtin' },
+  { id: 'pqHfZKP75CvOlQylNhV4', name: 'Bill', description: 'Balanced, seasoned storyteller', gender: 'Male', accent: 'American', age: 'Older', archetype: 'narration', languages: ['en', 'fr', 'es', 'de', 'hi', 'zh', 'ar', 'pt', 'it', 'cs'], source: 'builtin' },
+  { id: 'N2lVS1w4EtoT3dr4eOWO', name: 'Callum', description: 'Gravelly trickster energy', gender: 'Male', accent: 'American', age: 'Middle-Aged', archetype: 'character', languages: ['en', 'fr', 'hi'], source: 'builtin' },
+  { id: 'JBFqnCBsd6RMkjVDRZzb', name: 'George', description: 'British storyteller baritone', gender: 'Male', accent: 'British', age: 'Middle-Aged', archetype: 'character', languages: ['en', 'fr', 'es', 'hi', 'ar', 'ja', 'cs', 'fil'], source: 'builtin' },
+  { id: 'Xb7hH8MSUJpSbSDYk0k2', name: 'Alice', description: 'Clear British educator', gender: 'Female', accent: 'British', age: 'Middle-Aged', archetype: 'narration', languages: ['en', 'fr', 'hi', 'zh', 'ar', 'it', 'ja', 'pl'], source: 'builtin' },
+  { id: 'onwK4e9ZLuTAKqWW03F9', name: 'Daniel', description: 'Formal British broadcaster', gender: 'Male', accent: 'British', age: 'Middle-Aged', archetype: 'narration', languages: ['en', 'de', 'tr'], source: 'builtin' },
+  { id: 'pFZP5JQG7iQjIQuC4Bku', name: 'Lily', description: 'Velvety British news reader', gender: 'Female', accent: 'British', age: 'Middle-Aged', archetype: 'narration', languages: ['en', 'de', 'zh', 'it', 'ja', 'nl', 'pl', 'cs'], source: 'builtin' },
+  { id: 'IKne3meq5aSn9XLyUdCD', name: 'Charlie', description: 'Hyped, confident Aussie', gender: 'Male', accent: 'Australian', age: 'Young', archetype: 'character', languages: ['en', 'es', 'zh', 'pt', 'fil'], source: 'builtin' },
 ] as const
 
-export const DEFAULT_VOICE_ID = '21m00Tcm4TlvDq8ikWAMC' // Rachel
+export const DEFAULT_VOICE_ID = 'EXAVITQu4vr4xnSDxMaL' // Sarah
 
 /** Canned line used for on-demand voice previews (synthesized, never bundled). */
 export function previewLine(name: string): string {
@@ -91,8 +82,10 @@ export function mergeCustomVoices(
     name: v.name,
     description: 'Custom voice',
     gender: 'Neutral',
-    accent: 'Neutral',
-    tones: [],
+    accent: 'American',
+    archetype: 'conversational',
+    // Language support is unknown for custom IDs — never filtered out.
+    languages: [],
     source: 'custom',
   }))
   return [...VOICE_CATALOG, ...mapped]

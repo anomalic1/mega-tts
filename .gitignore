@@ -17,6 +17,9 @@ dist-ssr/
 .DS_Store
 *.local
 
+# Notes / reference prompts
+Prompt(addtogitignore).txt
+
 # Logs
 *.log
 npm-debug.log*

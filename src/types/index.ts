@@ -2,33 +2,44 @@
 
 export type VoiceGender = 'Male' | 'Female' | 'Neutral'
 
-export type VoiceAccent =
-  | 'American'
-  | 'British'
-  | 'Australian'
-  | 'Italian'
-  | 'Swedish'
-  | 'Neutral'
+export type VoiceAccent = 'American' | 'British' | 'Australian'
 
-export type VoiceTone =
-  | 'narration'
-  | 'conversational'
-  | 'character'
-  | 'news'
-  | 'audiobook'
-  | 'commercial'
-  | 'animation'
-  | 'documentary'
+export type VoiceAge = 'Young' | 'Young Adult' | 'Middle-Aged' | 'Older'
+
+export type VoiceArchetype = 'conversational' | 'narration' | 'character'
+
+export type VoiceLanguage =
+  | 'en'
+  | 'fr'
+  | 'es'
+  | 'de'
+  | 'hi'
+  | 'zh'
+  | 'ar'
+  | 'pt'
+  | 'it'
+  | 'ja'
+  | 'nl'
+  | 'pl'
+  | 'cs'
+  | 'sk'
+  | 'sv'
+  | 'tr'
+  | 'fil'
+  | 'ro'
 
 export interface VoicePreset {
-  /** ElevenLabs voice_id, e.g. "21m00Tcm4TlvDq8ikWAMC" */
+  /** ElevenLabs voice_id, e.g. "EXAVITQu4vr4xnSDxMaL" */
   id: string
   name: string
   /** Short human description, shown on the voice card */
   description: string
   gender: VoiceGender
   accent: VoiceAccent
-  tones: VoiceTone[]
+  age?: VoiceAge
+  archetype: VoiceArchetype
+  /** Language codes this voice supports (multilingual v2 matrix) */
+  languages: VoiceLanguage[]
   source: 'builtin' | 'custom'
 }
 

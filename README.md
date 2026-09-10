@@ -28,7 +28,7 @@ history lives only in this browser's IndexedDB.
 
 - **Multi-page app** — `/` landing, `/studio` (studio + local history), `/signin`, `/about`, with SPA fallback via `public/_redirects`
 - **Zero-Retention Audio Engine** — audio is rendered in memory, stored exclusively on your device
-- **46 curated voices** with gender / accent / tone tags and live-synthesized previews
+- **20 curated multilingual voices** with gender / accent / age / archetype tags, per-voice language support (18 languages), and live-synthesized previews
 - **Dynamic endpoint resolver** — paste any base URL; `/v1/audio/speech` is appended automatically
 - **Real-time canvas visualizer** driven by the Web Audio API `AnalyserNode`
 - **Local-only history** (IndexedDB via Dexie) with one-click purge

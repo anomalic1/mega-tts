@@ -4,9 +4,11 @@ import { Badge } from '@/components/ui/Badge'
 import { cn } from '@/lib/utils'
 import type { VoicePreset } from '@/types'
 
+const MAX_LANGUAGE_BADGES = 3
+
 /**
- * Voice selector card: accent/gender/tone tags, description, and an instant
- * preview button (synthesized live — never bundled, never stored).
+ * Voice selector card: accent/gender/age tags, supported languages, and an
+ * instant preview button (synthesized live — never bundled, never stored).
  */
 export function VoiceCard({
   voice,
@@ -21,6 +23,9 @@ export function VoiceCard({
   onPreview: (voice: VoicePreset) => void
   onSelect: (voice: VoicePreset) => void
 }) {
+  const shownLanguages = voice.languages.slice(0, MAX_LANGUAGE_BADGES)
+  const overflowLanguages = voice.languages.slice(MAX_LANGUAGE_BADGES)
+
   return (
     <motion.button
       layout
@@ -65,21 +70,37 @@ export function VoiceCard({
       <p className="line-clamp-1 text-[11.5px] text-titanium-500">{voice.description}</p>
 
       <div className="flex flex-wrap items-center gap-1">
-        <Badge>{voice.accent}</Badge>
-        <Badge>{voice.gender}</Badge>
+        <Badge>{[voice.accent, voice.gender, voice.age].filter(Boolean).join(' · ')}</Badge>
         {voice.source === 'custom' ? (
           <Badge tone="custom">
             <Sparkles className="mr-1 size-2.5" aria-hidden />
             Custom
           </Badge>
         ) : (
-          voice.tones.slice(0, 1).map((tone) => (
-            <Badge key={tone} tone="accent">
-              {tone}
-            </Badge>
-          ))
+          <Badge tone="accent">{voice.archetype}</Badge>
         )}
       </div>
+
+      {voice.source !== 'custom' && voice.languages.length > 0 && (
+        <div className="flex flex-wrap items-center gap-1" aria-label="Supported languages">
+          {shownLanguages.map((code) => (
+            <span
+              key={code}
+              className="rounded-md bg-white/[0.04] px-1.5 py-0.5 text-[9.5px] font-semibold uppercase tracking-wide text-titanium-400"
+            >
+              {code}
+            </span>
+          ))}
+          {overflowLanguages.length > 0 && (
+            <span
+              title={`Also speaks: ${overflowLanguages.join(', ').toUpperCase()}`}
+              className="rounded-md px-1 py-0.5 text-[9.5px] font-semibold text-titanium-500"
+            >
+              +{overflowLanguages.length}
+            </span>
+          )}
+        </div>
+      )}
     </motion.button>
   )
 }
