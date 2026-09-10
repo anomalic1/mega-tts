@@ -1,54 +1,59 @@
-import { useState } from 'react'
+import { useEffect } from 'react'
+import { BrowserRouter, Outlet, Route, Routes, useLocation } from 'react-router-dom'
 import { Navbar } from '@/components/Navbar'
-import { Hero } from '@/components/Hero'
-import { Studio } from '@/components/Studio'
-import { HistoryPanel } from '@/components/HistoryPanel'
-import { AboutSection } from '@/components/AboutSection'
 import { Footer } from '@/components/Footer'
-import { AuthModal } from '@/components/AuthModal'
-import { ApiSettingsDialog } from '@/components/ApiSettingsDialog'
+import { Landing } from '@/pages/Landing'
+import { StudioPage } from '@/pages/StudioPage'
+import { SignInPage } from '@/pages/SignInPage'
+import { AboutPage } from '@/pages/AboutPage'
+import { NotFound } from '@/pages/NotFound'
 import { SettingsProvider } from '@/context/SettingsContext'
 import { AuthProvider } from '@/context/AuthContext'
 import { PlayerProvider } from '@/context/PlayerContext'
 import { ToastProvider } from '@/context/ToastContext'
-import type { HistoryEntry } from '@/types'
+import { UiProvider } from '@/context/UiContext'
+
+/** Reset scroll position on every route change. */
+function ScrollToTop() {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    window.scrollTo({ top: 0 })
+  }, [pathname])
+  return null
+}
+
+function Layout() {
+  return (
+    <div id="top" className="min-h-dvh">
+      <Navbar />
+      <main>
+        <Outlet />
+      </main>
+      <Footer />
+    </div>
+  )
+}
 
 export default function App() {
-  const [authOpen, setAuthOpen] = useState(false)
-  const [settingsOpen, setSettingsOpen] = useState(false)
-  const [restore, setRestore] = useState<HistoryEntry | null>(null)
-
-  const openSettings = () => setSettingsOpen(true)
-
   return (
     <SettingsProvider>
       <AuthProvider>
         <PlayerProvider>
           <ToastProvider>
-            <div id="top" className="min-h-dvh">
-              <Navbar onOpenAuth={() => setAuthOpen(true)} onOpenSettings={openSettings} />
-
-              <main>
-                <Hero />
-                <Studio
-                  onOpenSettings={openSettings}
-                  restore={restore}
-                  onRestoreConsumed={() => setRestore(null)}
-                />
-                <HistoryPanel
-                  onRestore={(entry) => {
-                    setRestore(entry)
-                    document.getElementById('studio')?.scrollIntoView({ behavior: 'smooth' })
-                  }}
-                />
-                <AboutSection />
-              </main>
-
-              <Footer />
-
-              <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
-              <ApiSettingsDialog open={settingsOpen} onClose={() => setSettingsOpen(false)} />
-            </div>
+            <UiProvider>
+              <BrowserRouter>
+                <ScrollToTop />
+                <Routes>
+                  <Route element={<Layout />}>
+                    <Route index element={<Landing />} />
+                    <Route path="studio" element={<StudioPage />} />
+                    <Route path="signin" element={<SignInPage />} />
+                    <Route path="about" element={<AboutPage />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Route>
+                </Routes>
+              </BrowserRouter>
+            </UiProvider>
           </ToastProvider>
         </PlayerProvider>
       </AuthProvider>

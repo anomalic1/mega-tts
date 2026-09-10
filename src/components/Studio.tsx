@@ -9,6 +9,7 @@ import { AudioPlayer } from '@/components/AudioPlayer'
 import { useSettings } from '@/context/SettingsContext'
 import { usePlayer } from '@/context/PlayerContext'
 import { useToast } from '@/context/ToastContext'
+import { useUi } from '@/context/UiContext'
 import { synthesizeSpeech } from '@/lib/api'
 import { putEntry, requestPersistentStorage } from '@/lib/db'
 import { DEFAULT_MODEL } from '@/data/models'
@@ -25,17 +26,16 @@ const CHAR_LIMIT = 5000
  * and local history.
  */
 export function Studio({
-  onOpenSettings,
   restore,
   onRestoreConsumed,
 }: {
-  onOpenSettings: () => void
   restore: HistoryEntry | null
   onRestoreConsumed: () => void
 }) {
   const { baseUrl, apiKey, isEndpointConfigured, customVoices } = useSettings()
   const player = usePlayer()
   const { toast } = useToast()
+  const { openSettings } = useUi()
 
   const [text, setText] = useState('')
   const [voiceId, setVoiceId] = useState(DEFAULT_VOICE_ID)
@@ -84,7 +84,7 @@ export function Studio({
       return
     }
     if (!isEndpointConfigured) {
-      onOpenSettings()
+      openSettings()
       toast('Add a speech endpoint in API Settings to start generating.')
       return
     }
@@ -142,7 +142,7 @@ export function Studio({
 
   const previewVoice = async (voice: VoicePreset) => {
     if (!isEndpointConfigured) {
-      onOpenSettings()
+      openSettings()
       toast('Add a speech endpoint in API Settings to hear previews.')
       return
     }
@@ -262,7 +262,7 @@ export function Studio({
 
           {!isEndpointConfigured && (
             <button
-              onClick={onOpenSettings}
+              onClick={openSettings}
               className="inline-flex items-center gap-1.5 text-xs text-titanium-500 transition-colors hover:text-zinc-300"
             >
               <Settings2 className="size-3.5" aria-hidden />

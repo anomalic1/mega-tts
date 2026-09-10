@@ -26,6 +26,7 @@ endpoint. There is no backend: every request goes straight from your browser
 to the endpoint you configure, the audio is rendered in memory, and your
 history lives only in this browser's IndexedDB.
 
+- **Multi-page app** — `/` landing, `/studio` (studio + local history), `/signin`, `/about`, with SPA fallback via `public/_redirects`
 - **Zero-Retention Audio Engine** — audio is rendered in memory, stored exclusively on your device
 - **46 curated voices** with gender / accent / tone tags and live-synthesized previews
 - **Dynamic endpoint resolver** — paste any base URL; `/v1/audio/speech` is appended automatically

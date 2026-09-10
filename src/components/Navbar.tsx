@@ -1,20 +1,23 @@
 import { useEffect, useState } from 'react'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { AudioWaveform, Settings, UserRound } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
+import { useUi } from '@/context/UiContext'
 import { cn } from '@/lib/utils'
 
+const LINKS = [
+  { to: '/studio', label: 'Studio' },
+  { to: '/about', label: 'About' },
+] as const
+
 /**
- * Sticky glass header. Owns no state beyond scroll-shadow; auth chip and
- * settings gear delegate to App-level dialogs.
+ * Sticky glass header. Route links via NavLink; the settings gear opens the
+ * global API Settings dialog.
  */
-export function Navbar({
-  onOpenAuth,
-  onOpenSettings,
-}: {
-  onOpenAuth: () => void
-  onOpenSettings: () => void
-}) {
+export function Navbar() {
   const { user, signOut } = useAuth()
+  const { openSettings } = useUi()
+  const navigate = useNavigate()
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
@@ -28,19 +31,32 @@ export function Navbar({
     <header
       className={cn(
         'fixed inset-x-0 top-0 z-40 transition-[background-color,border-color] duration-300',
-        scrolled ? 'border-b border-white/10 bg-black/40 backdrop-blur-xl' : 'border-b border-transparent',
+        scrolled
+          ? 'border-b border-white/10 bg-black/40 backdrop-blur-xl'
+          : 'border-b border-transparent',
       )}
     >
       <nav className="mx-auto flex h-14 max-w-6xl items-center gap-6 px-6">
-        <a href="#top" className="flex items-center gap-2.5" aria-label="Zydit TTS — home">
+        <Link to="/" className="flex items-center gap-2.5" aria-label="Zydit TTS — home">
           <AudioWaveform className="size-5 text-accent" aria-hidden />
           <span className="text-[15px] font-semibold tracking-tight">Zydit TTS</span>
-        </a>
+        </Link>
 
         <div className="ml-4 hidden items-center gap-5 text-[13px] text-titanium-400 sm:flex">
-          <a href="#studio" className="transition-colors hover:text-zinc-100">Studio</a>
-          <a href="#history" className="transition-colors hover:text-zinc-100">History</a>
-          <a href="#about" className="transition-colors hover:text-zinc-100">About</a>
+          {LINKS.map((link) => (
+            <NavLink
+              key={link.to}
+              to={link.to}
+              className={({ isActive }) =>
+                cn(
+                  'transition-colors hover:text-zinc-100',
+                  isActive && 'text-zinc-100',
+                )
+              }
+            >
+              {link.label}
+            </NavLink>
+          ))}
         </div>
 
         <div className="ml-auto flex items-center gap-2">
@@ -59,7 +75,7 @@ export function Navbar({
             </button>
           ) : (
             <button
-              onClick={onOpenAuth}
+              onClick={() => navigate('/signin')}
               className="text-[13px] text-titanium-400 transition-colors hover:text-zinc-100"
             >
               Sign in
@@ -67,7 +83,7 @@ export function Navbar({
           )}
 
           <button
-            onClick={onOpenSettings}
+            onClick={openSettings}
             className="flex size-8 items-center justify-center rounded-lg text-titanium-400 transition-colors hover:bg-white/5 hover:text-zinc-100"
             aria-label="API settings"
             title="API settings"
