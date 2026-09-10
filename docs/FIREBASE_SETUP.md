@@ -3,8 +3,20 @@
 Zydit TTS uses Firebase **Authentication only**, with **Google as the single
 sign-in provider** — one click, no forms, no passwords. The app performs zero
 Firestore reads/writes and zero Cloud Storage access — your audio and history
-never touch Firebase. Auth exists purely as optional convenience; **guest
-mode is first-class and the entire studio works without an account.**
+never touch Firebase. Auth exists purely as optional convenience; the studio
+can also be gated behind it (`src/config.ts` → `REQUIRE_SIGN_IN`).
+
+There are **two ways to configure Firebase** — pick one:
+
+1. **Committed config (pre-enabled, simplest):** fill in the values in
+   `src/data/firebaseConfig.ts` and commit. Firebase web config values are
+   public identifiers, not secrets — this is safe and is how Firebase's own
+   docs recommend using them. Access is controlled by authorized domains
+   (step 5) and security rules (step 6), not by hiding these values.
+2. **Environment variables:** set `VITE_FIREBASE_*` in Cloudflare Pages →
+   Settings → Environment variables (Production + Preview), then redeploy.
+   These override the committed config, so forks can point at their own
+   Firebase project without editing code.
 
 If you skip this guide entirely, the app runs fine — it will simply show a
 "running fully local" note in the sign-in dialog.
@@ -22,6 +34,8 @@ If you skip this guide entirely, the app runs fine — it will simply show a
 1. In the project overview, click the **Web (`</>`)** icon
 2. Nickname: `zydit-tts-web` → **Register app**
 3. Copy the `firebaseConfig` values from the snippet shown
+4. Either paste them into `src/data/firebaseConfig.ts` (committed config),
+   or map them to the environment variables below
 
 ## 3. Map the config to environment variables
 

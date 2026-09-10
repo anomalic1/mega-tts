@@ -8,15 +8,38 @@
 
 import type { Auth, User } from 'firebase/auth'
 import type { AuthUser } from '@/types'
+import {
+  COMMITTED_FIREBASE_CONFIG,
+  isCommittedConfigComplete,
+  type FirebaseWebConfig,
+} from '@/data/firebaseConfig'
 
 const env = import.meta.env
 
-export const isFirebaseEnabled = Boolean(
-  env.VITE_FIREBASE_API_KEY &&
-    env.VITE_FIREBASE_AUTH_DOMAIN &&
-    env.VITE_FIREBASE_PROJECT_ID &&
-    env.VITE_FIREBASE_APP_ID,
+/**
+ * Config resolution: environment variables win; otherwise the committed
+ * config in src/data/firebaseConfig.ts is used, so auth works out of the
+ * box once the host fills it in (or pre-enabled before deployment).
+ */
+const envConfig: FirebaseWebConfig = {
+  apiKey: env.VITE_FIREBASE_API_KEY ?? '',
+  authDomain: env.VITE_FIREBASE_AUTH_DOMAIN ?? '',
+  projectId: env.VITE_FIREBASE_PROJECT_ID ?? '',
+  storageBucket: env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: env.VITE_FIREBASE_APP_ID ?? '',
+}
+
+const hasEnvConfig = Boolean(
+  envConfig.apiKey && envConfig.authDomain && envConfig.projectId && envConfig.appId,
 )
+
+export const firebaseConfig: FirebaseWebConfig = hasEnvConfig
+  ? envConfig
+  : COMMITTED_FIREBASE_CONFIG
+
+export const isFirebaseEnabled =
+  hasEnvConfig || isCommittedConfigComplete(COMMITTED_FIREBASE_CONFIG)
 
 let authPromise: Promise<Auth | null> | null = null
 
@@ -30,14 +53,7 @@ export function getFirebaseAuth(): Promise<Auth | null> {
           import('firebase/app'),
           import('firebase/auth'),
         ])
-        const app = getApps().length ? getApp() : initializeApp({
-          apiKey: env.VITE_FIREBASE_API_KEY!,
-          authDomain: env.VITE_FIREBASE_AUTH_DOMAIN!,
-          projectId: env.VITE_FIREBASE_PROJECT_ID!,
-          storageBucket: env.VITE_FIREBASE_STORAGE_BUCKET,
-          messagingSenderId: env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-          appId: env.VITE_FIREBASE_APP_ID!,
-        })
+        const app = getApps().length ? getApp() : initializeApp(firebaseConfig)
         return getAuth(app)
       } catch {
         // Misconfigured keys or blocked network — stay in guest mode silently.
