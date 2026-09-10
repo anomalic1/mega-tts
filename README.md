@@ -7,6 +7,7 @@
 Rendered in memory. Stored exclusively on your device.
 
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+[![Open Source](https://img.shields.io/badge/Open%20Source-%E2%9C%93-brightgreen)](https://github.com/anomalic1/mega-tts)
 [![React 19](https://img.shields.io/badge/React-19-61dafb)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6)](https://www.typescriptlang.org)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-v4-38bdf8)](https://tailwindcss.com)
@@ -25,6 +26,9 @@ Zydit TTS is a fully client-side text-to-speech studio powered by ElevenLabs
 endpoint. There is no backend: every request goes straight from your browser
 to the endpoint you configure, the audio is rendered in memory, and your
 history lives only in this browser's IndexedDB.
+
+**This project is open source** — browse, clone, and contribute at
+[github.com/anomalic1/mega-tts](https://github.com/anomalic1/mega-tts).
 
 - **Multi-page app** — `/` landing, `/studio` (studio + local history), `/signin`, `/about`, with SPA fallback via `public/_redirects`
 - **Zero-Retention Audio Engine** — audio is rendered in memory, stored exclusively on your device
