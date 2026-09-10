@@ -12,7 +12,7 @@ Rendered in memory. Stored exclusively on your device.
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-v4-38bdf8)](https://tailwindcss.com)
 [![Deploy to Cloudflare](https://img.shields.io/badge/Deploy-Cloudflare-f38020)](https://deploy.workers.cloudflare.com/?url=https://github.com/anomalic1/mega-tts)
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/anomalic1/mega-tts)
+[![Deploy to Cloudflare Pages](https://img.shields.io/badge/Deploy-Cloudflare%20Pages-f38020)](https://dash.cloudflare.com/?to=/:account/workers-and-pages/create/pages)
 
 </div>
 
