@@ -145,19 +145,16 @@ Storage reads or writes).
    on your own domain. `public/_headers` (security headers) is picked up
    automatically by Pages.
 
-## Alternative: Cloudflare Workers
+## Deploying from the CLI (optional)
 
-The same static output can be deployed as a **Worker with static assets**
-(Cloudflare's newer hosting model) — the repo ships a `wrangler.jsonc` for
-this:
+Prefer deploying from your machine instead of the Git integration?
 
 ```bash
-npm run deploy        # builds, then `wrangler deploy`
+npm run deploy        # builds, then `wrangler pages deploy`
 ```
 
-Workers Builds settings if configuring by hand: build command `npm run build`,
-deploy command `npx wrangler deploy`. Note that `_headers` only applies on
-Pages, not Workers static assets.
+The repo ships a `wrangler.jsonc` in Pages form (`pages_build_output_dir:
+"dist"`), so Wrangler knows exactly what to upload.
 
 ## Troubleshooting
 
