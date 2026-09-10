@@ -78,6 +78,8 @@ export function Studio({
     setParams((prev) => ({ ...prev, ...patch }))
 
   const generate = async () => {
+    // Unlock audio inside this tap, before any await — required on iOS.
+    player.unlock()
     const trimmed = text.trim()
     if (!trimmed) {
       toast('Write something first — the studio is listening.')
@@ -141,6 +143,8 @@ export function Studio({
   }
 
   const previewVoice = async (voice: VoicePreset) => {
+    // Unlock audio inside this tap, before any await — required on iOS.
+    player.unlock()
     if (!isEndpointConfigured) {
       openSettings()
       toast('Add a speech endpoint in API Settings to hear previews.')

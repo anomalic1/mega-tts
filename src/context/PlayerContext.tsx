@@ -20,6 +20,10 @@ import type { GenerationParams } from '@/types'
  * playbackRate (preservesPitch off) and is NOT baked into the mp3.
  */
 
+/** Zero-byte silent WAV — used solely to unlock the element on iOS. */
+const SILENT_WAV =
+  'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA='
+
 export interface TrackMeta {
   voiceName: string
   params: GenerationParams
@@ -32,6 +36,12 @@ interface PlayerContextValue {
   close: () => void
   togglePlay: () => void
   seek: (time: number) => void
+  /**
+   * Unlock audio playback on iOS, synchronously inside a user gesture.
+   * Call BEFORE any await (fetch, decode…) — iOS lets an <audio> element
+   * play later without another gesture only if it was unlocked in one.
+   */
+  unlock: () => void
 
   hasTrack: boolean
   isPlaying: boolean
@@ -57,6 +67,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const objectUrlRef = useRef<string | null>(null)
   const analyserRef = useRef<AnalyserNode | null>(null)
+  const unlockedRef = useRef(false)
 
   const [track, setTrack] = useState<{ blob: Blob; meta: TrackMeta } | null>(null)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -77,6 +88,28 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     // that's exactly what we want when the user asks for a pitch change.
     el.preservesPitch = ptch === 0
     el.playbackRate = spd * pitchFactor(ptch)
+  }, [])
+
+  /**
+   * iOS Safari only allows play() on an element that has already played
+   * successfully inside a user gesture. Play a zero-byte silent WAV right
+   * here — synchronously in the tap — and every later load()/play() on the
+   * same element is allowed, even after an await. Also resumes the shared
+   * AudioContext while we still hold the gesture.
+   */
+  const unlock = useCallback(() => {
+    const el = audioRef.current
+    if (!el || unlockedRef.current) return
+    getAudioContext()
+    el.src = SILENT_WAV
+    el.play()
+      .then(() => {
+        unlockedRef.current = true
+        el.pause()
+      })
+      .catch(() => {
+        /* not unlocked — the next tap tries again */
+      })
   }, [])
 
   const load = useCallback(
@@ -213,6 +246,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       close,
       togglePlay,
       seek,
+      unlock,
       hasTrack: track !== null,
       isPlaying,
       currentTime,
@@ -233,6 +267,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       close,
       togglePlay,
       seek,
+      unlock,
       track,
       isPlaying,
       currentTime,

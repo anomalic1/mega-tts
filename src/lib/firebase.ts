@@ -91,10 +91,46 @@ function toAuthUser(user: User): AuthUser {
 export async function signInWithGooglePopup(): Promise<AuthUser> {
   const auth = await getFirebaseAuth()
   if (!auth) throw new Error('Sign-in is not available in this build.')
-  const { GoogleAuthProvider, signInWithPopup } = await import('firebase/auth')
+  const { GoogleAuthProvider, signInWithPopup, signInWithRedirect } = await import('firebase/auth')
   const provider = new GoogleAuthProvider()
-  const cred = await signInWithPopup(auth, provider)
-  return toAuthUser(cred.user)
+  try {
+    const cred = await signInWithPopup(auth, provider)
+    return toAuthUser(cred.user)
+  } catch (err) {
+    const code = (err as { code?: string })?.code ?? ''
+    // Popups are blocked or unsupported on iOS Safari and in-app browsers
+    // (every non-Safari iOS browser is a WebView) — fall back to a
+    // full-page redirect instead of showing an error.
+    if (
+      code === 'auth/popup-blocked' ||
+      code === 'auth/operation-not-supported-in-this-environment' ||
+      code === 'auth/cancelled-popup-request'
+    ) {
+      await signInWithRedirect(auth, provider)
+      // The page navigates away; when it returns, the auth observer below
+      // picks the signed-in user up.
+      const redirecting = new Error('Redirecting to Google sign-in…')
+      ;(redirecting as Error & { code?: string }).code = 'auth/redirect-in-progress'
+      throw redirecting
+    }
+    throw err
+  }
+}
+
+/**
+ * Consume a pending sign-in redirect on load. The auth observer delivers the
+ * user either way — this just clears the redirect state and swallows its
+ * errors so a bumpy return never surfaces as a scary message.
+ */
+export async function consumeRedirectResult(): Promise<void> {
+  const auth = await getFirebaseAuth()
+  if (!auth) return
+  try {
+    const { getRedirectResult } = await import('firebase/auth')
+    await getRedirectResult(auth)
+  } catch {
+    /* observer state is the source of truth; stay calm */
+  }
 }
 
 /** Subscribe to auth state. Returns an unsubscribe fn; callback fires with null guests. */
@@ -127,6 +163,10 @@ export function friendlyAuthError(err: unknown): string {
       return 'Another sign-in window is already open.'
     case 'auth/network-request-failed':
       return 'Network issue reaching the sign-in service.'
+    case 'auth/operation-not-supported-in-this-environment':
+      return 'This browser can’t open a sign-in popup — trying a redirect instead.'
+    case 'auth/redirect-in-progress':
+      return 'Taking you to Google sign-in…'
     case 'auth/unauthorized-domain':
       return 'This domain is not authorized for sign-in — hosts must add it in the Firebase console.'
     default:

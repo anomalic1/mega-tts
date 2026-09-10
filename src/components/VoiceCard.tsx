@@ -56,7 +56,7 @@ export function VoiceCard({
               onPreview(voice)
             }
           }}
-          className="flex size-7 items-center justify-center rounded-lg border border-white/10 text-titanium-400 opacity-0 transition-all duration-150 hover:border-accent/40 hover:text-accent focus-visible:opacity-100 group-hover:opacity-100"
+          className="flex size-8 items-center justify-center rounded-lg border border-white/10 text-titanium-400 transition-all duration-150 hover:border-accent/40 hover:text-accent focus-visible:opacity-100 md:opacity-0 md:group-hover:opacity-100"
           aria-label={`Preview ${voice.name}`}
         >
           {previewing ? (

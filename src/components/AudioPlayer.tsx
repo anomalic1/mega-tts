@@ -103,7 +103,7 @@ export function AudioPlayer({ compact = false }: { compact?: boolean }) {
       <div className="flex flex-wrap items-center gap-2 px-4 pb-4 pt-1">
         <button
           onClick={player.togglePlay}
-          className="flex size-10 items-center justify-center rounded-full bg-accent text-white shadow-[0_4px_16px_rgba(61,139,255,0.35)] transition-transform duration-150 hover:bg-[#5a9bff] active:scale-95"
+          className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent text-white shadow-[0_4px_16px_rgba(61,139,255,0.35)] transition-transform duration-150 hover:bg-[#5a9bff] active:scale-95"
           aria-label={player.isPlaying ? 'Pause' : 'Play'}
         >
           {player.isPlaying ? <Pause className="size-4" /> : <Play className="ml-0.5 size-4" />}
@@ -113,7 +113,7 @@ export function AudioPlayer({ compact = false }: { compact?: boolean }) {
           {formatDuration(player.currentTime)} / {formatDuration(player.duration)}
         </span>
 
-        <div className="ml-auto flex items-center gap-1.5">
+        <div className="ml-auto flex w-full items-center justify-end gap-1.5 sm:w-auto">
           <button
             onClick={cycleSpeed}
             className="flex h-8 items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-2.5 font-mono text-xs text-zinc-300 transition-colors hover:border-white/20"

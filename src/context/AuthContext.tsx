@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from 'react'
 import {
+  consumeRedirectResult,
   friendlyAuthError,
   isFirebaseEnabled,
   observeAuth,
@@ -44,6 +45,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let unsubscribe: (() => void) | null = null
     let cancelled = false
+    // Finish a popup→redirect sign-in if we just came back from Google.
+    void consumeRedirectResult()
     void observeAuth((u) => {
       if (cancelled) return
       setUser(u)

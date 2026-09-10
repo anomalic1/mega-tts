@@ -71,7 +71,7 @@ path.
 
 **Model selection** is pinned to `eleven_multilingual_v2` in the frontend
 (`src/data/models.ts`) — deliberately not env-driven, so a missing variable can
-never break generation. Other model IDs appear as "coming soon" chips.
+never break generation.
 
 **Pitch & speed:** speed is sent to the API when supported; pitch is applied
 at playback time (playback-rate with `preservesPitch = false`), so it is *not*

@@ -36,13 +36,13 @@ export function Navbar() {
           : 'border-b border-transparent',
       )}
     >
-      <nav className="mx-auto flex h-14 max-w-6xl items-center gap-6 px-6">
+      <nav className="mx-auto flex h-14 max-w-6xl items-center gap-3 px-4 sm:gap-6 sm:px-6">
         <Link to="/" className="flex items-center gap-2.5" aria-label="Zydit TTS — home">
           <AudioWaveform className="size-5 text-accent" aria-hidden />
           <span className="text-[15px] font-semibold tracking-tight">Zydit TTS</span>
         </Link>
 
-        <div className="ml-4 hidden items-center gap-5 text-[13px] text-titanium-400 sm:flex">
+        <div className="ml-2 flex items-center gap-4 text-[13px] text-titanium-400 sm:ml-4 sm:gap-5 sm:text-[13px]">
           {LINKS.map((link) => (
             <NavLink
               key={link.to}
@@ -71,7 +71,7 @@ export function Navbar() {
               ) : (
                 <UserRound className="size-4 text-titanium-400" aria-hidden />
               )}
-              <span className="max-w-32 truncate">{user.displayName ?? user.email}</span>
+              <span className="hidden max-w-24 truncate sm:inline">{user.displayName ?? user.email}</span>
             </button>
           ) : (
             <button

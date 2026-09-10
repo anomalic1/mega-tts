@@ -13,6 +13,33 @@ const ACCENT = 'rgba(61, 139, 255, 0.9)'
 const DIM = 'rgba(255, 255, 255, 0.14)'
 const PEAK_DIM = 'rgba(255, 255, 255, 0.22)'
 
+/**
+ * Rounded bar with a fallback: iOS < 16.4 and older browsers lack
+ * ctx.roundRect, and a throw inside the rAF loop would kill the visualizer.
+ */
+function drawBar(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: number,
+) {
+  ctx.beginPath()
+  if (typeof ctx.roundRect === 'function') {
+    ctx.roundRect(x, y, w, h, r)
+  } else {
+    const rad = Math.min(r, w / 2, h / 2)
+    ctx.moveTo(x + rad, y)
+    ctx.arcTo(x + w, y, x + w, y + h, rad)
+    ctx.arcTo(x + w, y + h, x, y + h, rad)
+    ctx.arcTo(x, y + h, x, y, rad)
+    ctx.arcTo(x, y, x + w, y, rad)
+    ctx.closePath()
+  }
+  ctx.fill()
+}
+
 export function AudioVisualizer({
   analyser,
   isPlaying,
@@ -69,9 +96,7 @@ export function AudioVisualizer({
         const x = i * slot + (slot - barW) / 2
         ctx.fillStyle = i === Math.floor(BAR_COUNT * 0.5) ? ACCENT : DIM
         // Mirrored center-out bars.
-        ctx.beginPath()
-        ctx.roundRect(x, mid - barH / 2, barW, barH, barW / 2)
-        ctx.fill()
+        drawBar(ctx, x, mid - barH / 2, barW, barH, barW / 2)
       }
     }
 
@@ -88,9 +113,7 @@ export function AudioVisualizer({
         const barH = Math.max(2, peaks[i] * (height * 0.8))
         const x = i * slot + (slot - barW) / 2
         ctx.fillStyle = x + barW / 2 <= playedX ? ACCENT : PEAK_DIM
-        ctx.beginPath()
-        ctx.roundRect(x, mid - barH / 2, barW, barH, barW / 2)
-        ctx.fill()
+        drawBar(ctx, x, mid - barH / 2, barW, barH, barW / 2)
       }
     }
 

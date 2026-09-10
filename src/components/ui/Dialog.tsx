@@ -50,22 +50,22 @@ export function Dialog({
             onClick={onClose}
             aria-hidden
           />
-          <motion.div
-            ref={panelRef}
-            role="dialog"
-            aria-modal="true"
-            aria-label={title}
-            tabIndex={-1}
-            initial={{ opacity: 0, scale: 0.95, y: 12 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: 8 }}
-            transition={springModal}
-            className={cn(
-              'glass-strong relative w-full max-w-lg rounded-3xl p-6',
-              'focus:outline-none',
-              className,
-            )}
-          >
+        <motion.div
+          ref={panelRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label={title}
+          tabIndex={-1}
+          initial={{ opacity: 0, scale: 0.95, y: 12 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.96, y: 8 }}
+          transition={springModal}
+          className={cn(
+            'glass-strong relative max-h-[calc(100dvh-2rem)] w-full max-w-lg overflow-y-auto rounded-3xl p-6',
+            'focus:outline-none',
+            className,
+          )}
+        >
             <div className="mb-5 flex items-start justify-between gap-4">
               <div>
                 <h2 className="text-lg font-semibold tracking-tight text-zinc-100">{title}</h2>

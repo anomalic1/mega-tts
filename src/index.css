@@ -41,6 +41,33 @@ body {
     radial-gradient(ellipse 80% 50% at 50% -10%, rgba(61, 139, 255, 0.06), transparent),
     radial-gradient(ellipse 60% 40% at 90% 110%, rgba(255, 255, 255, 0.03), transparent);
   background-attachment: fixed;
+  /* Mobile: avoid stray iOS Safari text-selection callouts on tap. */
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Mobile feel: no gray tap flash, no 300ms double-tap zoom delay,
+   no long-press callouts on buttons — while keeping text selectable. */
+button,
+[role='button'],
+input,
+label,
+a,
+summary {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+input[type='text'],
+input[type='url'],
+input[type='password'],
+textarea {
+  user-select: auto;
+  /* 16px+ prevents iOS Safari from zooming the page on focus. */
+  font-size: 16px;
+}
+canvas {
+  -webkit-tap-highlight-color: transparent;
 }
 
 ::selection {
