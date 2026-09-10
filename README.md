@@ -87,8 +87,13 @@ design — use a key you trust with your endpoint.
 
 ## Local setup
 
+Start by **forking this repository** (Fork button, top-right) — you'll deploy
+from your own fork, so you keep full control of the code and configuration.
+
+Then clone **your fork** and run it locally:
+
 ```bash
-git clone https://github.com/anomalic1/mega-tts.git
+git clone https://github.com/<your-username>/mega-tts.git
 cd mega-tts
 npm install
 cp .env.example .env.local   # optional — everything works with no env at all
@@ -121,23 +126,30 @@ Storage reads or writes).
 
 ## Deploying to Cloudflare Pages
 
-Open [dash.cloudflare.com](https://dash.cloudflare.com) → **Workers & Pages →
-Create → Pages → Connect to Git**, select this repository, then:
+**Fork this repo first**, then deploy from your fork:
 
-- **Framework preset:** Vite (or None — either works)
-- **Build command:** `npm run build`
-- **Build output directory:** `dist`
-- **Environment variables:** set `VITE_TTS_API_BASE_URL` (and optionally the
-  `VITE_FIREBASE_*` keys) for **Production and Preview**
-
-After the first deploy: **Custom domains → Set up a domain → `zydit.in`**.
-`public/_headers` (security headers) is picked up automatically by Pages.
+1. Click **Fork** (top-right of this page) — this copies the project to your
+   GitHub account.
+2. Open [dash.cloudflare.com](https://dash.cloudflare.com) → **Workers &
+   Pages → Create → Pages → Connect to Git**, and select **your fork** of
+   `mega-tts`.
+3. Set:
+   - **Framework preset:** Vite (or None — either works)
+   - **Build command:** `npm run build`
+   - **Build output directory:** `dist`
+   - **Environment variables:** `VITE_TTS_API_BASE_URL` (your speech
+     endpoint), and optionally the `VITE_FIREBASE_*` keys — for both
+     **Production and Preview**
+4. **Save and Deploy** — every push to your fork now redeploys automatically.
+5. After the first deploy: **Custom domains → Set up a domain** to serve it
+   on your own domain. `public/_headers` (security headers) is picked up
+   automatically by Pages.
 
 ## Alternative: Cloudflare Workers
 
 The same static output can be deployed as a **Worker with static assets**
 (Cloudflare's newer hosting model) — the repo ships a `wrangler.jsonc` for
-this, plus the deploy button at the top of this README:
+this:
 
 ```bash
 npm run deploy        # builds, then `wrangler deploy`
