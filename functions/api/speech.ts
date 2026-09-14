@@ -1,16 +1,3 @@
-/**
- * Managed API proxy — POST /api/speech
- *
- * The browser never sees the upstream endpoint, the API key, or the real
- * model ID. The frontend POSTs to this same-origin function; we inject the
- * server-side credentials (TTS_API_KEY, TTS_MODEL_ID, TTS_API_BASE_URL —
- * set in the Cloudflare Pages dashboard, NOT prefixed with VITE_ so they
- * are never embedded in the client bundle) and stream the audio straight
- * back through. Nothing is logged, nothing is stored.
- *
- * Enable from the frontend by setting VITE_MANAGED_API="true".
- */
-
 interface Env {
   /** Base URL of the OpenAI-compatible speech endpoint (server-side only). */
   TTS_API_BASE_URL?: string
@@ -25,7 +12,7 @@ interface PagesContext {
   env: Env
 }
 
-/** Same sanitization the frontend uses: tolerate base, /v1, or full paths. */
+
 function speechUrl(base: string): string {
   const b = base
     .trim()
@@ -42,7 +29,7 @@ export async function onRequestPost({ request, env }: PagesContext): Promise<Res
   const base = env.TTS_API_BASE_URL?.trim()
   if (!base) {
     return json(
-      'The managed speech endpoint is not configured. The host must set TTS_API_BASE_URL (see README).',
+      'The managed TTS endpoint is not configured. The deployment must be set with TTS_API_BASE_URL (see README.MD).',
       503,
     )
   }
@@ -61,8 +48,6 @@ export async function onRequestPost({ request, env }: PagesContext): Promise<Res
     return json('Both "input" (text) and "voice" (voice ID) are required.', 400)
   }
 
-  // The client never chooses the model or supplies credentials — rebuild the
-  // payload from scratch with only the fields we sanction.
   const payload: Record<string, unknown> = {
     model,
     input,
@@ -89,10 +74,10 @@ export async function onRequestPost({ request, env }: PagesContext): Promise<Res
       body: JSON.stringify(payload),
     })
   } catch {
-    return json('Could not reach the speech endpoint.', 502)
+    return json('Could not reach the TTS endpoint.', 502)
   }
 
-  // Pass the upstream error body through so the frontend can show its message.
+
   if (!upstream.ok) {
     const contentType = upstream.headers.get('content-type') ?? ''
     if (contentType.includes('application/json')) {
@@ -102,10 +87,10 @@ export async function onRequestPost({ request, env }: PagesContext): Promise<Res
         headers: { 'Content-Type': 'application/json' },
       })
     }
-    return json(`The speech service responded with ${upstream.status}.`, 502)
+    return json(`This TTS service responded with ${upstream.status}.`, 502)
   }
 
-  // Stream the rendered audio straight through — never buffered, never stored.
+
   return new Response(upstream.body, {
     status: 200,
     headers: {
