@@ -1,9 +1,6 @@
 interface Env {
-  /** Base URL of the OpenAI-compatible speech endpoint (server-side only). */
   TTS_API_BASE_URL?: string
-  /** Bearer key for the upstream endpoint (server-side only). */
   TTS_API_KEY?: string
-  /** The real model ID users never see (server-side only). */
   TTS_MODEL_ID?: string
 }
 
