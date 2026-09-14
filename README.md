@@ -66,7 +66,7 @@ path.
 **Endpoint precedence:**
 
 1. User-entered base URL in API Settings (persisted in `localStorage`)
-2. `VITE_TTS_API_BASE_URL` (set on Cloudflare Pages)
+2. `TTS_API_BASE_URL` (set on Cloudflare Pages)
 3. Nothing configured → the studio calmly asks for an endpoint. Never an error screen.
 
 **Model selection** is pinned to `eleven_multilingual_v2` in the frontend
